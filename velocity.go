@@ -8,5 +8,5 @@ const (
 
 type velocity struct {
 	LocalVector vector2f
-	Strength    float32
+	Strength    float64
 }

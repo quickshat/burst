@@ -10,6 +10,7 @@ const (
 	screenWidth  = 800
 	screenHeight = 600
 	screenTitle  = "Burst"
+	tickrate     = 250
 )
 
 var myGame *game

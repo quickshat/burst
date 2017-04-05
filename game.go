@@ -10,7 +10,8 @@ const (
 )
 
 type game struct {
-	IGS *inGameState
+	Tick int
+	IGS  *inGameState
 }
 
 func newGame() *game {
@@ -23,6 +24,7 @@ func (g *game) getCurrentUpdate() func(*ebiten.Image) error {
 	if g.IGS.isActive() {
 		return g.IGS.update
 	}
+	g.Tick++
 	return nil
 }
 

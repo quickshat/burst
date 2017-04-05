@@ -34,7 +34,7 @@ func (s *inGameState) setActive(b bool) {
 
 func (s *inGameState) init() {
 	ballSprite, _, _ := ebitenutil.NewImageFromFile("circle.png", ebiten.FilterNearest)
-	s.Balls = append(s.Balls, newBall(30, vector2f{250, 250}, false, ballSprite))
+	s.Balls = append(s.Balls, newBall(15, &vector2f{250, 250}, false, ballSprite, s))
 }
 
 func (s *inGameState) logic() {
