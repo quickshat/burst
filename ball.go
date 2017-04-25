@@ -1,6 +1,7 @@
 package main
 
 import "github.com/hajimehoshi/ebiten"
+import "math/rand"
 
 type ball struct {
 	Size        float64
@@ -35,8 +36,9 @@ func (b *ball) update() {
 		return
 	}
 	// Perform calulateable changes
-	b.applyGravity()
 	b.calculateResultingVector()
+	b.decayVelocities()
+	b.applyGravity()
 	// Update Render Settings
 	b.Settings = &ebiten.DrawImageOptions{}
 	b.Settings.GeoM.Scale(b.Scale, b.Scale)
@@ -47,10 +49,16 @@ func (b *ball) applyGravity() {
 	if b.Stopped || b.IsColliding {
 		return
 	}
-	if b.Impacts[VelocityGravity] == nil || b.Pos.Y > screenHeight {
+	if b.Impacts[VelocityGravity] == nil || b.Pos.Y+b.R > screenHeight {
 		b.Impacts[VelocityGravity] = &velocity{gravityVecNorm, gravityScaleNorm}
+		r := rand.Int31n(2)
+		v := 1.0
+		if r == 1 {
+			v = v * -1
+		}
+		b.Impacts[VelocityShot] = &velocity{vector2f{1 * v, -1 * v}, rand.Float64() * float64(rand.Intn(50))}
 	}
-	if b.Pos.Y > screenHeight {
+	if b.Pos.Y+b.R > screenHeight {
 		b.Pos.X = 250
 		b.Pos.Y = 250
 	}
@@ -63,4 +71,14 @@ func (b *ball) calculateResultingVector() {
 		resolution = v.LocalVector.scale(v.Strength).summarize(*resolution)
 	}
 	b.Pos = b.Pos.summarize(*resolution)
+}
+
+func (b *ball) decayVelocities() {
+	for k, v := range b.Impacts {
+		if v.Strength < 0.1 && k != VelocityGravity {
+			v = &velocity{vector2f{0, 0}, 0}
+		} else if k != VelocityGravity {
+			v.Strength = v.Strength * 0.85
+		}
+	}
 }

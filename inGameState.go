@@ -35,6 +35,7 @@ func (s *inGameState) setActive(b bool) {
 func (s *inGameState) init() {
 	ballSprite, _, _ := ebitenutil.NewImageFromFile("circle.png", ebiten.FilterNearest)
 	s.Balls = append(s.Balls, newBall(15, &vector2f{250, 250}, false, ballSprite, s))
+	s.Balls[0].Impacts[VelocityShot] = &velocity{vector2f{1, -1}, 20}
 }
 
 func (s *inGameState) logic() {
@@ -46,6 +47,8 @@ func (s *inGameState) logic() {
 	for _, v := range s.Balls {
 		v.update()
 	}
+	// Increment ticker
+	s.Parent.Tick++
 }
 
 func (s *inGameState) draw(g *ebiten.Image) error {

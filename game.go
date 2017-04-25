@@ -24,7 +24,6 @@ func (g *game) getCurrentUpdate() func(*ebiten.Image) error {
 	if g.IGS.isActive() {
 		return g.IGS.update
 	}
-	g.Tick++
 	return nil
 }
 
